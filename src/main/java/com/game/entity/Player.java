@@ -1,6 +1,7 @@
 package com.game.entity;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.sql.Date;
 
 @Entity
@@ -9,7 +10,7 @@ public class Player {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private Long id;
+    private long id;
 
     @Column(name = "name")
     private String name;
@@ -17,10 +18,27 @@ public class Player {
     @Column(name = "title")
     private String title;
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "name='" + name + '\'' +
+                ", title='" + title + '\'' +
+                ", race=" + race +
+                ", profession=" + profession +
+                ", birthday=" + birthday +
+                ", isBanned=" + isBanned +
+                ", experience=" + experience +
+                ", level=" + level +
+                ", untilNextLevel=" + untilNextLevel +
+                '}';
+    }
+
     @Column(name = "race")
+    @Enumerated(EnumType.STRING)
     private Race race;
 
     @Column(name = "profession")
+    @Enumerated(EnumType.STRING)
     private Profession profession;
 
     @Column(name = "birthday")
@@ -39,11 +57,11 @@ public class Player {
     private int untilNextLevel;
 
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -122,7 +140,7 @@ public class Player {
     public Player() {
     }
 
-    public Player(Long id, String name, String title, Race race, Profession profession, Date birthday, boolean isBanned, int experience, int level, int untilNextLevel) {
+    public Player(long id, String name, String title, Race race, Profession profession, Date birthday, boolean isBanned, int experience, int level, int untilNextLevel) {
         this.id = id;
         this.name = name;
         this.title = title;
