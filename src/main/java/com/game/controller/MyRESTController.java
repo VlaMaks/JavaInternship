@@ -65,18 +65,8 @@ public class MyRESTController {
 
     @GetMapping("{id}")
     public ResponseEntity<Player> getPlayer(@PathVariable Long id) {
-
-//        if (!(id instanceof Long)) {
-//            throw new ResponseStatusException(
-//                    HttpStatus.BAD_REQUEST, "please, check id"
-//            );
-//        }
+        validId(id);
         Player player = playerService.getPlayer(id);
-        if (player == null) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "such player not found"
-            );
-        }
         return new ResponseEntity<>(player, HttpStatus.OK);
     }
 
@@ -88,6 +78,12 @@ public class MyRESTController {
 
     @DeleteMapping("{id}")
     public void deletePlayer(@PathVariable Long id) {
+        validId(id);
         playerService.deletePlayer(id);
+    }
+
+    private void validId(long id) {
+        if (!(id > 0 && id == (int) id))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Please, check id");
     }
 }

@@ -14,8 +14,9 @@ public interface PlayerService {
                                 Integer maxExperience, Integer minLevel, Integer maxLevel,
                                 PlayerOrder order, Integer pageNumber, Integer pageSize);
 
-    Player getPlayer(long id);
 
+
+    Player getPlayer(Long id);
 
     void createPlayer(Player player);
 

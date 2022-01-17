@@ -8,9 +8,10 @@ import com.game.repository.PlayerDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 
 import java.util.List;
@@ -47,8 +48,9 @@ public class PlayerServiceImpl implements PlayerService{
 
 
     @Override
-    public Player getPlayer(long id) {
-        return playerDAO.getOne(id);
+    public Player getPlayer(Long id) {
+        playerExistById(id);
+        return playerDAO.findById(id).get();
     }
 
     @Override
@@ -66,8 +68,14 @@ public class PlayerServiceImpl implements PlayerService{
     @Override
     @Transactional
     public void deletePlayer(Long id) {
+        playerExistById(id);
         playerDAO.deleteById(id);
     }
 
+
+    private void playerExistById(Long id) {
+        if (!(playerDAO.existsById(id)))
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Such player is not found");
+    }
 
 }
