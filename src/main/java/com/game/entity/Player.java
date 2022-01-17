@@ -1,8 +1,8 @@
 package com.game.entity;
 
 import javax.persistence.*;
-import java.math.BigInteger;
 import java.sql.Date;
+import java.util.Objects;
 
 @Entity
 @Table(name="player")
@@ -21,16 +21,30 @@ public class Player {
     @Override
     public String toString() {
         return "Player{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", title='" + title + '\'' +
                 ", race=" + race +
                 ", profession=" + profession +
                 ", birthday=" + birthday +
-                ", isBanned=" + isBanned +
+                ", banned=" + banned +
                 ", experience=" + experience +
                 ", level=" + level +
                 ", untilNextLevel=" + untilNextLevel +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Player player = (Player) o;
+        return id == player.id && banned == player.banned && experience == player.experience && level == player.level && untilNextLevel == player.untilNextLevel && Objects.equals(name, player.name) && Objects.equals(title, player.title) && race == player.race && profession == player.profession && Objects.equals(birthday, player.birthday);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, title, race, profession, birthday, banned, experience, level, untilNextLevel);
     }
 
     @Column(name = "race")
@@ -45,16 +59,16 @@ public class Player {
     private Date birthday;
 
     @Column(name = "banned")
-    private boolean isBanned;
+    private Boolean banned;
 
     @Column(name = "experience")
-    private int experience;
+    private Integer experience;
 
     @Column(name = "level")
-    private int level;
+    private Integer level;
 
     @Column(name = "untilNextLevel")
-    private int untilNextLevel;
+    private Integer untilNextLevel;
 
 
     public long getId() {
@@ -106,11 +120,11 @@ public class Player {
     }
 
     public boolean isBanned() {
-        return isBanned;
+        return banned;
     }
 
     public void setBanned(boolean banned) {
-        isBanned = banned;
+        this.banned = banned;
     }
 
     public int getExperience() {
@@ -140,14 +154,14 @@ public class Player {
     public Player() {
     }
 
-    public Player(long id, String name, String title, Race race, Profession profession, Date birthday, boolean isBanned, int experience, int level, int untilNextLevel) {
+    public Player(long id, String name, String title, Race race, Profession profession, Date birthday, Boolean banned, Integer experience, Integer level, Integer untilNextLevel) {
         this.id = id;
         this.name = name;
         this.title = title;
         this.race = race;
         this.profession = profession;
         this.birthday = birthday;
-        this.isBanned = isBanned;
+        this.banned = banned;
         this.experience = experience;
         this.level = level;
         this.untilNextLevel = untilNextLevel;
