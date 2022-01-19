@@ -5,6 +5,7 @@ import com.game.entity.Player;
 import com.game.entity.Profession;
 import com.game.entity.Race;
 import com.game.repository.PlayerDAO;
+import com.game.validation.PlayerValidation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -55,14 +56,75 @@ public class PlayerServiceImpl implements PlayerService{
 
     @Override
     @Transactional
-    public void createPlayer(Player player) {
-        playerDAO.save(player);
+    public Player createPlayer(Player player) {
+        if (player.getName() == null && player.getTitle() == null && player.getExperience() == null & player.getBirthday() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Параметры игрока не заданы");
+        }
+        PlayerValidation playerValidation = new PlayerValidation(player);
+        playerValidation.isCorrectParams();
+        if (playerValidation.isBannedNull()) {
+            player.setBanned(false);
+        }
+        player.setLevel(calculateLevel(player.getExperience()));
+        player.setUntilNextLevel(calculateNextLevel(player.getExperience(), player.getLevel()));
+        return playerDAO.save(player);
     }
 
     @Override
     @Transactional
-    public Player updatePlayer() {
-        return null;
+    public Player updatePlayer(Long id, Player player) {
+       playerExistById(id);
+       Player updatePlayer = playerDAO.findById(id).get();
+       PlayerValidation playerValidation = new PlayerValidation(player);
+       if (playerValidation.isNameNull())
+            player.setName(updatePlayer.getName());
+       else {
+           if (playerValidation.isNameNotValid()) {
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+           }
+       }
+
+       if (playerValidation.isTitleNull())
+            player.setTitle(updatePlayer.getTitle());
+       else {
+           if (playerValidation.isTitleNotValid()) {
+               throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+           }
+       }
+
+       if (playerValidation.isRaceNull())
+            player.setRace(updatePlayer.getRace());
+
+        if (playerValidation.isProfessionNull())
+            player.setProfession(updatePlayer.getProfession());
+
+        if (playerValidation.isBirthDayNull())
+            player.setBirthday(updatePlayer.getBirthday());
+
+        if (playerValidation.isBannedNull())
+            player.setBanned(updatePlayer.isBanned());
+        else {
+            if (playerValidation.isDateOfBirthdayNegative()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+        }
+
+        if (playerValidation.isExperienceNull()) {
+            player.setExperience(updatePlayer.getExperience());
+            player.setLevel(updatePlayer.getLevel());
+            player.setUntilNextLevel(updatePlayer.getUntilNextLevel());
+        } else {
+            if (playerValidation.isExperienceNotCorrect()) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+            }
+            player.setLevel(calculateLevel(player.getExperience()));
+            player.setUntilNextLevel(calculateNextLevel(player.getExperience(), player.getLevel()));
+        }
+
+        player.setId(updatePlayer.getId());
+
+        return playerDAO.save(player);
+
     }
 
     @Override
@@ -78,4 +140,11 @@ public class PlayerServiceImpl implements PlayerService{
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Such player is not found");
     }
 
+    private int calculateLevel(int exp) {
+        return ((int) Math.sqrt(2500 + 200 * exp) - 50) / 100;
+    }
+
+    private int calculateNextLevel(int exp, int level) {
+        return 50 * (level + 1) * (level + 2) - exp;
+    }
 }

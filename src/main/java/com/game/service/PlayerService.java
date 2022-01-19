@@ -18,9 +18,9 @@ public interface PlayerService {
 
     Player getPlayer(Long id);
 
-    void createPlayer(Player player);
+    Player createPlayer(Player player);
 
-    Player updatePlayer();
+    Player updatePlayer(Long id, Player player);
 
     void deletePlayer(Long id);
 }

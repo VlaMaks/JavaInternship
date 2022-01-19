@@ -71,7 +71,7 @@ public class Player {
     private Integer untilNextLevel;
 
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -119,7 +119,7 @@ public class Player {
         this.birthday = birthday;
     }
 
-    public boolean isBanned() {
+    public Boolean isBanned() {
         return banned;
     }
 
@@ -127,7 +127,7 @@ public class Player {
         this.banned = banned;
     }
 
-    public int getExperience() {
+    public Integer getExperience() {
         return experience;
     }
 
@@ -135,7 +135,7 @@ public class Player {
         this.experience = experience;
     }
 
-    public int getLevel() {
+    public Integer getLevel() {
         return level;
     }
 
@@ -143,7 +143,7 @@ public class Player {
         this.level = level;
     }
 
-    public int getUntilNextLevel() {
+    public Integer getUntilNextLevel() {
         return untilNextLevel;
     }
 

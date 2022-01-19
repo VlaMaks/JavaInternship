@@ -71,9 +71,20 @@ public class MyRESTController {
     }
 
     @PostMapping("")
-    public Player createPlayer(@RequestBody Player player) {
-        playerService.createPlayer(player);
-        return player;
+    public ResponseEntity<Player> createPlayer(@RequestBody Player player) {
+        if (player == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "не заданы параметры игрока");
+        }
+        Player newPlayer = playerService.createPlayer(player);
+        return new ResponseEntity<>(newPlayer, HttpStatus.OK);
+    }
+
+    @PostMapping("{id}")
+    public ResponseEntity<Player> updatePlayer(@PathVariable Long id, @RequestBody Player player) {
+        validId(id);
+        player.setId(id);
+        Player updatePlayer = playerService.updatePlayer(id, player);
+        return new ResponseEntity<>(updatePlayer, HttpStatus.OK);
     }
 
     @DeleteMapping("{id}")
